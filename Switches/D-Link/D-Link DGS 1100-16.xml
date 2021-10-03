@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2021-10-03T15:17:14Z</date>
+    <groups>
+        <group>
+            <name>Templates/Modules</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>D-Link DGS 1100-16</template>
+            <name>D-Link DGS 1100-16</name>
+            <description>Custom template for particular firmware version &quot;1.01.B053&quot; of D-Link switch &quot;DGS 1100-16&quot;&#13;
+&#13;
+Customizations list:&#13;
+&#13;
+Some properties of ports are not being published as expected, therefore are not monitored:&#13;
+&#13;
+* MAC addresses of all interfaces are always the same - skipping from monitoring&#13;
+* Time Since Last Change is always zero - skipping from monitoring&#13;
+* Interface Description is not being published - skipping from monitoring&#13;
+* Interface Type always returns ethernetCsmacd(6) as per IETF working group - skipping from monitoring&#13;
+&#13;
+The firmware 1.01.B053 uses 32 bit counters, therefore “Template Module Interfaces Simple SNMP” will be used to collect interface metrics.&#13;
+&#13;
+&quot;Template Module Interfaces Simple SNMP&quot; – work with 32 bit counters&#13;
+&quot;Template Module Interfaces SNMP&quot; – work with 64 bit counters.&#13;
+&#13;
+In particular, metrics like: IfOutOctets is 32 bit , while IfCHOutOctets is 64 bit.&#13;
+&#13;
+Both of those SNMP modular templates are shipped with Zabbix distribution.&#13;
+Case you do not have them - you can add it from here - https://github.com/intelligent002/zabbix-templates/Switches/D-Link/</description>
+            <templates>
+                <template>
+                    <name>Template Module EtherLike-MIB SNMP</name>
+                </template>
+                <template>
+                    <name>Template Module Generic SNMP</name>
+                </template>
+                <template>
+                    <name>Template Module Interfaces Simple SNMP</name>
+                </template>
+            </templates>
+            <groups>
+                <group>
+                    <name>Templates/Modules</name>
+                </group>
+            </groups>
+            <screens>
+                <screen>
+                    <name>Network Problems</name>
+                    <hsize>4</hsize>
+                    <vsize>4</vsize>
+                    <screen_items>
+                        <screen_item>
+                            <resourcetype>20</resourcetype>
+                            <style>0</style>
+                            <resource>
+                                <name>Interface #{#SNMPINDEX}: Network problems</name>
+                                <host>D-Link DGS 1100-16</host>
+                            </resource>
+                            <width>250</width>
+                            <height>100</height>
+                            <x>0</x>
+                            <y>0</y>
+                            <colspan>4</colspan>
+                            <rowspan>4</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <url/>
+                            <application/>
+                            <max_columns>4</max_columns>
+                        </screen_item>
+                    </screen_items>
+                </screen>
+                <screen>
+                    <name>Network Speed</name>
+                    <hsize>4</hsize>
+                    <vsize>4</vsize>
+                    <screen_items>
+                        <screen_item>
+                            <resourcetype>20</resourcetype>
+                            <style>0</style>
+                            <resource>
+                                <name>Interface #{#SNMPINDEX}: Negotiated speed</name>
+                                <host>D-Link DGS 1100-16</host>
+                            </resource>
+                            <width>300</width>
+                            <height>100</height>
+                            <x>0</x>
+                            <y>0</y>
+                            <colspan>4</colspan>
+                            <rowspan>4</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <url/>
+                            <application/>
+                            <max_columns>4</max_columns>
+                        </screen_item>
+                    </screen_items>
+                </screen>
+                <screen>
+                    <name>Network Traffic</name>
+                    <hsize>4</hsize>
+                    <vsize>4</vsize>
+                    <screen_items>
+                        <screen_item>
+                            <resourcetype>20</resourcetype>
+                            <style>0</style>
+                            <resource>
+                                <name>Interface #{#SNMPINDEX}: Network traffic</name>
+                                <host>D-Link DGS 1100-16</host>
+                            </resource>
+                            <width>300</width>
+                            <height>100</height>
+                            <x>0</x>
+                            <y>0</y>
+                            <colspan>4</colspan>
+                            <rowspan>4</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <url/>
+                            <application/>
+                            <max_columns>4</max_columns>
+                        </screen_item>
+                    </screen_items>
+                </screen>
+                <screen>
+                    <name>System Status</name>
+                    <hsize>2</hsize>
+                    <vsize>1</vsize>
+                    <screen_items>
+                        <screen_item>
+                            <resourcetype>0</resourcetype>
+                            <style>0</style>
+                            <resource>
+                                <name>ICMP response time</name>
+                                <host>D-Link DGS 1100-16</host>
+                            </resource>
+                            <width>500</width>
+                            <height>200</height>
+                            <x>0</x>
+                            <y>0</y>
+                            <colspan>1</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <url/>
+                            <application/>
+                            <max_columns>3</max_columns>
+                        </screen_item>
+                        <screen_item>
+                            <resourcetype>0</resourcetype>
+                            <style>0</style>
+                            <resource>
+                                <name>Uptime</name>
+                                <host>D-Link DGS 1100-16</host>
+                            </resource>
+                            <width>500</width>
+                            <height>200</height>
+                            <x>1</x>
+                            <y>0</y>
+                            <colspan>1</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>0</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <url/>
+                            <application/>
+                            <max_columns>3</max_columns>
+                        </screen_item>
+                    </screen_items>
+                </screen>
+            </screens>
+        </template>
+    </templates>
+</zabbix_export>
