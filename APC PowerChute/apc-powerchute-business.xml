@@ -1,0 +1,1883 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>6.2</version>
+    <date>2023-03-03T21:00:17Z</date>
+    <template_groups>
+        <template_group>
+            <uuid>3dcd5bbe90534f9e8eb5c2d53756af63</uuid>
+            <name>Templates/Power</name>
+        </template_group>
+    </template_groups>
+    <templates>
+        <template>
+            <uuid>6ca48d503bef49058ccece8db8b21578</uuid>
+            <template>APC PowerChute Business</template>
+            <name>APC PowerChute Business</name>
+            <groups>
+                <group>
+                    <name>Templates/Power</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <uuid>80694b0e32c94f92acd6b22bbe815727</uuid>
+                    <name>PowerChute Service Status PING</name>
+                    <type>SIMPLE</type>
+                    <key>icmpping</key>
+                    <valuemap>
+                        <name>Service Connectivity</name>
+                    </valuemap>
+                    <preprocessing>
+                        <step>
+                            <type>BOOL_TO_DECIMAL</type>
+                            <parameters>
+                                <parameter/>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Availability</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>56ba99f6323f49faaf86c51f5ba392c1</uuid>
+                            <expression>last(/APC PowerChute Business/icmpping,#1)&lt;&gt;1 and 
+last(/APC PowerChute Business/icmpping,#2)&lt;&gt;1</expression>
+                            <name>PowerChute machine is not responding to PING</name>
+                            <priority>HIGH</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>8793aac461e841da934f439bf2867fa0</uuid>
+                    <name>PowerChute Service Status Process</name>
+                    <key>proc.num[java]</key>
+                    <description>Проверка запущена ли служба APC PBE Agent на Windows
+
+Рабочий вариант
+Ключ
+LanMgr-Mib-II-MIB::svSvcOperatingState.13.65.80.67.32.80.66.69.32.65.103.101.110.116
+SNMP OID
+1.3.6.1.4.1.77.1.2.3.1.3.13.65.80.67.32.80.66.69.32.65.103.101.110.116
+
+Не работает
+Ключ
+svSvcOperatingState[&quot;index&quot;,&quot;LanMgr-Mib-II-MIB::svSvcName&quot;,&quot;APC PBE Agent&quot;]
+SNMP OID
+1.3.6.1.4.1.77.1.2.3.1.3[&quot;index&quot;,&quot;1.3.6.1.4.1.77.1.2.3.1.1&quot;,&quot;APC PBE Agent&quot;]
+
+svSvcOperatingState = 1.3.6.1.4.1.77.1.2.3.1.3
+Рабочий статус сетевой службы:
+активный(1)
+ожидающий продолжения(2)
+ожидающий паузы(3)
+приостановленный(4)
+
+svSvcName 1.3.6.1.4.1.77.1.2.3.1.1
+Имя сетевой службы
+
+snmpwalk -v 2c -c public 192.168.XXX.XXX LanMgr-Mib-II-MIB::svSvcName
+snmpwalk -v 2c -c public 192.168.xxx.xxx:161 LanMgr-Mib-II-MIB::svSvcOperatingState[&quot;index&quot;,&quot;LanMgr-Mib-II-MIB::svSvcName&quot;,&quot;APC PBE Agent&quot;]
+
+APC PBE Agent в 10 системе имя будет oid 13.65.80.67.32.80.66.69.32.65.103.101.110.116
+
+
+snmpwalk -v 2c -c public 192.168.xxx.xxx:161 LanMgr-Mib-II-MIB::svSvcOperatingState.13.65.80.67.32.80.66.69.32.65.103.101.110.116
+Полность по OID
+snmpwalk -v 2c -c public 192.168.xxx.xxx:161 1.3.6.1.4.1.77.1.2.3.1.3.13.65.80.67.32.80.66.69.32.65.103.101.110.116
+Ответ
+LanMgr-Mib-II-MIB::svSvcOperatingState.&quot;APC PBE Agent&quot; = INTEGER: active(1)</description>
+                    <valuemap>
+                        <name>Service Availability</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Availability</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>e52c794fa9274ecbb39ca3275f7fee30</uuid>
+                            <expression>last(/APC PowerChute Business/proc.num[java],#1)&lt;&gt;1 and
+last(/APC PowerChute Business/proc.num[java],#2)&lt;&gt;1</expression>
+                            <name>PowerChute process is not running</name>
+                            <priority>HIGH</priority>
+                            <description>Последнее значение: {ITEM.VALUE} {ITEM.LASTVALUE} ({TIME})
+
+Работает(1)
+ожидающий продолжения(2)
+ожидающий паузы(3)
+приостановленный(4)
+
+Проверка по SNMP
+snmpwalk -v 2c -c public {HOST.CONN}:161 LanMgr-Mib-II-MIB::svSvcOperatingState.13.65.80.67.32.80.66.69.32.65.103.101.110.116</description>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>ae1956c92b624d6d8d2bb59e6d92bde9</uuid>
+                    <name>SNMP trap fallback</name>
+                    <type>SNMP_TRAP</type>
+                    <key>snmptrap.fallback</key>
+                    <delay>0</delay>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operation</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>d993b684fe294b91a54971dcdd96892a</uuid>
+                            <expression>nodata(/APC PowerChute Business/snmptrap.fallback,1m)=0</expression>
+                            <name>SNMP trap received</name>
+                            <status>DISABLED</status>
+                            <priority>HIGH</priority>
+                            <tags>
+                                <tag>
+                                    <tag>SNMP-TRAP</tag>
+                                    <value>True</value>
+                                </tag>
+                            </tags>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>3573f1e82faf45c1b71140933fc36cb5</uuid>
+                    <name>PowerChute Service Contact Person</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.2.1.1.4.0</snmp_oid>
+                    <key>sysContact</key>
+                    <delay>1d</delay>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <description>The textual identification of the contact person for this managed node, together with information on how to contact this person.</description>
+                    <inventory_link>CONTACT</inventory_link>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Identification</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>61cdd15392b84ed383afbd1067210137</uuid>
+                    <name>PowerChute Service Description</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.2.1.1.1.0</snmp_oid>
+                    <key>sysDescr</key>
+                    <delay>1d</delay>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <description>A brief description of the PowerNet sub-agent.</description>
+                    <inventory_link>OS_FULL</inventory_link>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Identification</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>88ab42e26a884a4899d633acdf5cf7ec</uuid>
+                    <name>PowerChute Service Name</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.2.1.1.5.0</snmp_oid>
+                    <key>sysName</key>
+                    <delay>1d</delay>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <description>An administratively-assigned name for this managed node.
+By convention, this is the node's fully-qualified domain name.</description>
+                    <inventory_link>NAME</inventory_link>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Identification</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>16e7bdd154394bf78993355b3aca10fa</uuid>
+                    <name>PowerChute Service Uptime</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.2.1.1.3.0</snmp_oid>
+                    <key>sysUpTime</key>
+                    <units>uptime</units>
+                    <description>PowerChute java process uptime (should be equal to vm uptime in case of autostart)
+Will differ from APC UPS box uptime</description>
+                    <preprocessing>
+                        <step>
+                            <type>MULTIPLIER</type>
+                            <parameters>
+                                <parameter>0.01</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Metrics</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>01ad1155dc924e83aaea1d334a02ae80</uuid>
+                            <expression>last(/APC PowerChute Business/sysUpTime)&lt;10m</expression>
+                            <name>PowerChute service has been restarted</name>
+                            <priority>INFO</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>7d5fa03dbdd2496881b10756904c7282</uuid>
+                    <name>PowerChute Service Version</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.2.4.1.2.0</snmp_oid>
+                    <key>sysVersion</key>
+                    <delay>1d</delay>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <description>A brief description of the PowerNet sub-agent.</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Identification</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>1eaef988b7a345c284b335f919f8073c</uuid>
+                            <expression>last(/APC PowerChute Business/sysVersion,#1)&lt;&gt;last(/APC PowerChute Business/sysVersion,#2) and length(last(/APC PowerChute Business/sysVersion,#1))&gt;0</expression>
+                            <name>PowerChute service version has been changed</name>
+                            <priority>INFO</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>bfbf57f8987d4740b6e3fadc0d6371e0</uuid>
+                    <name>Battery Actual Voltage</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.2.2.8.0</snmp_oid>
+                    <key>upsAdvBatteryActualVoltage</key>
+                    <value_type>FLOAT</value_type>
+                    <units>V</units>
+                    <description>The actual battery bus voltage in Volts.</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Metrics</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>30c662330d274d3eb186cf7fdd354d20</uuid>
+                    <name>Battery Capacity</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.318.1.1.1.2.2.1.0</snmp_oid>
+                    <key>upsAdvBatteryCapacity</key>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>The remaining battery capacity expressed in percent of full capacity.</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Metrics</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>2b5799ffeed144e69012536f8bec91ca</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvBatteryCapacity)&lt;20</expression>
+                            <name>Battery capacity is below 20%</name>
+                            <opdata>{ITEM.LASTVALUE}</opdata>
+                            <priority>DISASTER</priority>
+                        </trigger>
+                        <trigger>
+                            <uuid>ca7e4de9be0747f5b2e633bbf4d9cbf1</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvBatteryCapacity)&lt;40</expression>
+                            <name>Battery capacity is below 40%</name>
+                            <opdata>{ITEM.LASTVALUE}</opdata>
+                            <priority>HIGH</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>Battery capacity is below 20%</name>
+                                    <expression>last(/APC PowerChute Business/upsAdvBatteryCapacity)&lt;20</expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger>
+                        <trigger>
+                            <uuid>48bd4726f22d421f967223a3c6fcf10d</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvBatteryCapacity)&lt;60</expression>
+                            <name>Battery capacity is below 60%</name>
+                            <opdata>{ITEM.LASTVALUE}</opdata>
+                            <priority>AVERAGE</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>Battery capacity is below 20%</name>
+                                    <expression>last(/APC PowerChute Business/upsAdvBatteryCapacity)&lt;20</expression>
+                                </dependency>
+                                <dependency>
+                                    <name>Battery capacity is below 40%</name>
+                                    <expression>last(/APC PowerChute Business/upsAdvBatteryCapacity)&lt;40</expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger>
+                        <trigger>
+                            <uuid>90d7c6515e384855bfe21dcf92e7e61d</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvBatteryCapacity)&lt;80</expression>
+                            <name>Battery capacity is below 80%</name>
+                            <opdata>{ITEM.LASTVALUE}</opdata>
+                            <priority>WARNING</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>Battery capacity is below 20%</name>
+                                    <expression>last(/APC PowerChute Business/upsAdvBatteryCapacity)&lt;20</expression>
+                                </dependency>
+                                <dependency>
+                                    <name>Battery capacity is below 40%</name>
+                                    <expression>last(/APC PowerChute Business/upsAdvBatteryCapacity)&lt;40</expression>
+                                </dependency>
+                                <dependency>
+                                    <name>Battery capacity is below 60%</name>
+                                    <expression>last(/APC PowerChute Business/upsAdvBatteryCapacity)&lt;60</expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>dfd09a881b7741f18ca23767e2b5390e</uuid>
+                    <name>Battery Replacement Indicator</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.2.2.4.0</snmp_oid>
+                    <key>upsAdvBatteryReplaceIndicator</key>
+                    <description>Indicates whether the UPS batteries need replacing.</description>
+                    <valuemap>
+                        <name>Battery Replacement</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operation</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>3d9fdfcebfbf4930bd0efedac17c1354</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvBatteryReplaceIndicator)&lt;&gt;1</expression>
+                            <name>Battery replacement is required</name>
+                            <priority>DISASTER</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>6c00ed39921040e7a6562d9d8f0a3250</uuid>
+                    <name>Battery Run Time Remaining</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.2.2.3.0</snmp_oid>
+                    <key>upsAdvBatteryRunTimeRemaining</key>
+                    <units>uptime</units>
+                    <description>The UPS battery run time remaining before battery exhaustion.</description>
+                    <preprocessing>
+                        <step>
+                            <type>MULTIPLIER</type>
+                            <parameters>
+                                <parameter>0.01</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Metrics</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>fd7303fe64184b6c9499ed61537bedcc</uuid>
+                    <name>UPS Internal temperature</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.2.2.2.0</snmp_oid>
+                    <key>upsAdvBatteryTemperature</key>
+                    <value_type>FLOAT</value_type>
+                    <units>°C</units>
+                    <description>The current internal UPS temperature expressed in
+Celsius.</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Metrics</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>d58cf0c5f45044c5835cdbf17d427312</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvBatteryTemperature)&gt;50</expression>
+                            <name>Temperature is high</name>
+                            <opdata>{ITEM.LASTVALUE}</opdata>
+                            <priority>DISASTER</priority>
+                            <description>Температура слишком высокая более 50С</description>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>30f4a529583947f9b1b6ffc560e60b31</uuid>
+                    <name>Line Input Voltage High</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.5.2.2.0</snmp_oid>
+                    <key>upsAdvConfigHighTransferVolt</key>
+                    <delay>1d</delay>
+                    <value_type>FLOAT</value_type>
+                    <units>VAC</units>
+                    <description>The maximum line voltage in VAC allowed before the UPS system transfers to battery backup.
+For a list of allowed values supported by your UPS model, see the UPS User's Manual.
+If a value other than a supported value is provided in a set request, the UPS interprets it as a the next higher acceptable value.
+If the provided value is higher than the highest acceptable value, the highest acceptable value is used.</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Configuration</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>952945de07e948c993e96d0bd9da1a89</uuid>
+                    <name>Battery Low Run Time Reserve</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.5.2.8.0</snmp_oid>
+                    <key>upsAdvConfigLowBatteryRunTime</key>
+                    <units>uptime</units>
+                    <description>The desired run time of the UPS, in seconds, once the low battery condition is reached.
+During this time the UPS will produce a constant warning tone which can not be disabled.
+For a list of allowed values supported by your UPS model, see the UPS User's Manual.
+If a value other than a supported value is provided in a set request, the UPS interprets the value as the next higher acceptable value.
+If the provided value is higher than the highest acceptable value, the highest acceptable value is used.</description>
+                    <preprocessing>
+                        <step>
+                            <type>MULTIPLIER</type>
+                            <parameters>
+                                <parameter>0.01</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Metrics</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>2c1ab3aa9d4b4e8abed20cbf554885de</uuid>
+                    <name>Line Input Voltage Low</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.5.2.3.0</snmp_oid>
+                    <key>upsAdvConfigLowTransferVolt</key>
+                    <delay>1d</delay>
+                    <value_type>FLOAT</value_type>
+                    <units>VAC</units>
+                    <description>The minimum line voltage in VAC allowed before the UPS system transfers to battery backup.
+For a list of allowed values supported by your UPS model, see the UPS User's Manual.
+If a value other than a supported value is provided in a set request, the UPS interprets it as the next lower acceptable value.
+If the provided value is lower than the lowest acceptable value, the lowest acceptable value is used.</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Configuration</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>652b8fa93df94c608ee26d04d5af4e41</uuid>
+                    <name>Line Output Voltage Configured</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.5.2.1.0</snmp_oid>
+                    <key>upsAdvConfigRatedOutputVoltage</key>
+                    <delay>1d</delay>
+                    <units>VAC</units>
+                    <description>The nominal output voltage from the UPS in VAC.
+For a list of allowed values supported by your UPS model, see the UPS User's Manual.
+If a value other than a supported value is provided in a set request, the UPS interprets it as the next lower acceptable value.
+If the provided value is lower than the lowest acceptable value, the lowest acceptable value is used.</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Configuration</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>1826adeb7cc84ecaaa3fa72c4c7a435a</uuid>
+                    <name>Line Input Sensetivity</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.5.2.7.0</snmp_oid>
+                    <key>upsAdvConfigSensitivity</key>
+                    <delay>1d</delay>
+                    <description>The sensitivity of the UPS to utility line abnormalities or noises.</description>
+                    <valuemap>
+                        <name>Input Sensetivity</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Configuration</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>be6c1564b5cd4da987ef05b762155c64</uuid>
+                    <name>UPS Firmware version</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.1.2.1.0</snmp_oid>
+                    <key>upsAdvIdentFirmwareRevision</key>
+                    <delay>1d</delay>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <description>The firmware revision of the UPS system's microprocessor.</description>
+                    <inventory_link>OS</inventory_link>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Identification</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>21c88052286242ba9015cb0aef9e10be</uuid>
+                    <name>UPS Serial number</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.1.2.3.0</snmp_oid>
+                    <key>upsAdvIdentSerialNumber</key>
+                    <delay>1d</delay>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <description>An 8-character string identifying the serial number of the UPS internal microprocessor.
+This number is set at the factory.
+NOTE:This number does NOT correspond to the serial number on the rear of the UPS.</description>
+                    <inventory_link>SERIALNO_A</inventory_link>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Identification</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>b4f3a6f1d9cd48c2b45157c8f048ad8b</uuid>
+                    <name>Line Input Frequency</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.3.2.4.0</snmp_oid>
+                    <key>upsAdvInputFrequency</key>
+                    <value_type>FLOAT</value_type>
+                    <units>Hz</units>
+                    <description>The current input frequency to the UPS system in Hz.</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Metrics</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>9fb9629d400e4e7fbc44385f7bc5b232</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvInputFrequency)&lt;49 or
+51&lt;last(/APC PowerChute Business/upsAdvInputFrequency)</expression>
+                            <name>Line input frequency is not 50 Hz</name>
+                            <opdata>{ITEM.LASTVALUE}</opdata>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>bdf9036c2653451b926b8202c48fb150</uuid>
+                    <name>Line Input Voltage Real</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.318.1.1.1.3.2.1.0</snmp_oid>
+                    <key>upsAdvInputLineVoltage</key>
+                    <value_type>FLOAT</value_type>
+                    <units>VAC</units>
+                    <description>The current utility line voltage in VAC.</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Metrics</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>6c79da34992a44d0af43891f914735c5</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvInputLineVoltage)&gt;240</expression>
+                            <name>Line input has high voltage</name>
+                            <opdata>{ITEM.LASTVALUE}</opdata>
+                            <priority>INFO</priority>
+                            <description>Входящее напряжение более 250В
+По умолчанию
+Высокое Напряжение  253В (253-265)
+Срабатывает режим 12 ⇒ on Smart Trim (понижение напряжения)
+Низкое Напряжение 208В (196-208)
+Срабатывает режим 4 ⇒ на Smart Boost (повышение напряжения)
+Чувствительность Качества Силы (Нормальный, Уменьшенная, Пониженный)
+выходное напряжение 230В (220, 230, 240)
+
+Normal (Нормальная). 
+Для обеспечения наилучшего качества электропитания подаваемого на
+подключенное оборудование ИБП будет работать от батареи чаще
+
+Reduced (Уменьшенная). 
+ИБП будет игнорировать некоторые колебания напряжения прежде чем переключиться на питние от батареи
+
+Low ( Низкая ).
+ ИБП будет игнорировать большее количество колебаний напряжения и будет использовать питание о батареи реже
+
+При изменении параметра Power Quality</description>
+                        </trigger>
+                        <trigger>
+                            <uuid>bfe1800214bd4171a90822146bd3755b</uuid>
+                            <expression>between(last(/APC PowerChute Business/upsAdvInputLineVoltage),1,220)</expression>
+                            <name>Line Input has low voltage</name>
+                            <opdata>{ITEM.LASTVALUE}</opdata>
+                            <priority>INFO</priority>
+                            <description>Входящее напряжение менее 196В
+По умолчанию
+Высокое Напряжение  253В (253-265)
+Срабатывает режим 12 ⇒ on Smart Trim (понижение напряжения)
+Низкое Напряжение 208В (196-208)
+Срабатывает режим 4 ⇒ на Smart Boost (повышение напряжения)
+Чувствительность Качества Силы (Нормальный, Уменьшенная, Пониженный)
+выходное напряжение 230В (220, 230, 240)
+
+Normal (Нормальная). 
+Для обеспечения наилучшего качества электропитания подаваемого на
+подключенное оборудование ИБП будет работать от батареи чаще
+
+Reduced (Уменьшенная). 
+ИБП будет игнорировать некоторые колебания напряжения прежде чем переключиться на питние от батареи
+
+Low ( Низкая ).
+ ИБП будет игнорировать большее количество колебаний напряжения и будет использовать питание о батареи реже
+
+При изменении параметра Power Quality</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>c4dd6f4f6bc044afb18b8d38ca85bebf</uuid>
+                    <name>Line Output Frequency</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.318.1.1.1.4.2.2.0</snmp_oid>
+                    <key>upsAdvOutputFrequency</key>
+                    <value_type>FLOAT</value_type>
+                    <units>Hz</units>
+                    <description>The current output frequency of the UPS system in Hz.</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Metrics</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>1902bfb10ea04792abe32206131aa07e</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvOutputFrequency)&lt;49 or
+51&lt;last(/APC PowerChute Business/upsAdvOutputFrequency)</expression>
+                            <name>Line output frequency is not 50 Hz</name>
+                            <priority>AVERAGE</priority>
+                            <description>Выходная частота не соответствует 50Гц
+Последнее значение: {ITEM.VALUE} {ITEM.LASTVALUE} ({TIME})
+
+было
+{PowerChute Business:upsAdvOutputFrequency.last()}&lt;&gt;50
+стало
+{PowerChute Business:upsAdvOutputFrequency.last()}&lt;49 or
+{PowerChute Business:upsAdvOutputFrequency.last()}&gt;51</description>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>2249aed674904226acf082bf15d56d11</uuid>
+                    <name>Line Output Load</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.4.2.3.0</snmp_oid>
+                    <key>upsAdvOutputLoad</key>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>The current UPS load expressed in percent of rated capacity.</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Metrics</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>0eae34ea858546d5ad39ca668cbb4f58</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvOutputLoad)&gt;50</expression>
+                            <name>Line output has high load</name>
+                            <opdata>{ITEM.LASTVALUE}</opdata>
+                            <priority>AVERAGE</priority>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>62d5895680dc41f79746d5f2ee4830eb</uuid>
+                    <name>Line Output Voltage Real</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.318.1.1.1.4.2.1.0</snmp_oid>
+                    <key>upsAdvOutputVoltage</key>
+                    <value_type>FLOAT</value_type>
+                    <units>VAC</units>
+                    <description>The output voltage of the UPS system in VAC.</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Metrics</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>e620d61a21fe4d0dadf81662e70cc139</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvOutputVoltage)&gt;240</expression>
+                            <name>Line output has high voltage</name>
+                            <opdata>{ITEM.LASTVALUE}</opdata>
+                            <priority>AVERAGE</priority>
+                            <description>АРС Выходное напряжение более 247В (По умолчанию 230В)
+Последнее значение: {ITEM.VALUE} {ITEM.LASTVALUE} ({TIME})</description>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                        <trigger>
+                            <uuid>df6347c3da9b4882ad5bb4a37ebf1ebc</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvOutputVoltage)&lt;220</expression>
+                            <name>Line output has low voltage</name>
+                            <opdata>{ITEM.LASTVALUE}</opdata>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>1cbae2bb04c14b72ad8480238be0a4a6</uuid>
+                    <name>Battery Calibration Date</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.7.2.7.0</snmp_oid>
+                    <key>upsAdvTestCalibrationDate</key>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>The date the last UPS runtime calibration was performed in mm/dd/yy format.</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operation</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>1f2410e7e257407ebb9e01a8cab7388e</uuid>
+                    <name>Battery Calibration Status</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.7.2.6.0</snmp_oid>
+                    <key>upsAdvTestCalibrationResults</key>
+                    <description>The results of the last runtime calibration.
+Value ok(1) means a successful runtime calibration.
+Value invalidCalibration(2) indicates last calibration did not take place since the battery capacity was below 100%.
+Value calibrationInProgress(3) means a calibration is occurring now.</description>
+                    <valuemap>
+                        <name>Battery Calibration</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operation</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>319d346db23d4a65a96a96a9caee7e32</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvTestCalibrationResults)=2</expression>
+                            <name>Battery calibration has failed</name>
+                            <priority>DISASTER</priority>
+                        </trigger>
+                        <trigger>
+                            <uuid>af67d120aa5d4806ae95da470ceb32c6</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvTestCalibrationResults)=3</expression>
+                            <name>Calibration is in progress</name>
+                            <priority>INFO</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>5720c172e1b14d18b63ae190a55fec0d</uuid>
+                    <name>Battery Diagnostics Schedule</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.7.2.1.0</snmp_oid>
+                    <key>upsAdvTestDiagnosticSchedule</key>
+                    <description>The UPS system's automatic battery test schedule.</description>
+                    <valuemap>
+                        <name>Battery Diagnostics Schedule</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operation</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>f3570ab22e2649178bd96a2a5c4a2e4a</uuid>
+                    <name>Battery Diagnostics Status</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.7.2.3.0</snmp_oid>
+                    <key>upsAdvTestDiagnosticsResults</key>
+                    <description>The results of the last UPS diagnostics test performed.
+Value ok(1) means a successful diagnostics.
+Value failed(2) indicates ?
+Value invalidTest(3) indicates ?
+Value testInProgress(4) indicates that diagnostics test is running right now</description>
+                    <valuemap>
+                        <name>Battery Diagnostics</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operation</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>7669de902ce54c448db9c3b5b49853ff</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvTestDiagnosticsResults)=2</expression>
+                            <name>Battery diagnostics has failed</name>
+                            <priority>DISASTER</priority>
+                        </trigger>
+                        <trigger>
+                            <uuid>a9f3dbffd90f40efb26757c043338099</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvTestDiagnosticsResults)=3</expression>
+                            <name>Battery diagnostics has invalid test</name>
+                            <priority>DISASTER</priority>
+                        </trigger>
+                        <trigger>
+                            <uuid>01ad89f157004c3db53707d86f28d7ee</uuid>
+                            <expression>last(/APC PowerChute Business/upsAdvTestDiagnosticsResults)=4</expression>
+                            <name>Battery diagnostics is in progress</name>
+                            <priority>INFO</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>56d910691db84ddaa798f7e4d13eaedd</uuid>
+                    <name>Battery Diagnostics Date</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.7.2.4.0</snmp_oid>
+                    <key>upsAdvTestLastDiagnosticsDate</key>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>The date the last UPS diagnostics test was performed in mm/dd/yy format.</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operation</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>09ee5208f11a45ff87f018e659cf8bba</uuid>
+                    <name>Battery Discharge Status</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.2.1.1.0</snmp_oid>
+                    <key>upsBasicBatteryStatus</key>
+                    <description>The status of the UPS batteries.
+A batteryLow(3) value indicates the UPS will be unable to sustain the current load, and its services will be lost if power is not restored.
+The amount of run time in reserve at the time of low battery can be configured by the upsAdvConfigLowBatteryRunTime.
+
+1 ⇒ unknown
+2 ⇒ batteryOk
+3 ⇒ batteryLow</description>
+                    <valuemap>
+                        <name>Battery Capacity Status</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Metrics</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>39518848c95f49be8a62f85ca99e2631</uuid>
+                            <expression>last(/APC PowerChute Business/upsBasicBatteryStatus)&lt;&gt;2</expression>
+                            <name>Battery capacity is within the low level reserve</name>
+                            <priority>DISASTER</priority>
+                            <description>1 ⇒ unknown
+2 ⇒ batteryNormal
+3 ⇒ batteryLow</description>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>4760488558534d58b36329c2a8649a4b</uuid>
+                    <name>Battery Time On Battery</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.2.1.2.0</snmp_oid>
+                    <key>upsBasicBatteryTimeOnBattery</key>
+                    <units>uptime</units>
+                    <description>The elapsed time since the UPS has switched to battery power.</description>
+                    <preprocessing>
+                        <step>
+                            <type>MULTIPLIER</type>
+                            <parameters>
+                                <parameter>0.01</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operation</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>9883ea54e82f49efb77303faacf23781</uuid>
+                    <name>UPS Model name</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.1.1.1.0</snmp_oid>
+                    <key>upsBasicIdentModel</key>
+                    <delay>1d</delay>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <description>The UPS model name (e.g. 'APC Smart-UPS 600').</description>
+                    <inventory_link>TYPE</inventory_link>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Identification</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>d0b4a8cd4af8452da8720ad8bd8a63ab</uuid>
+                    <name>PowerChute Service Location</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.1.1.2.0</snmp_oid>
+                    <key>upsBasicIdentName</key>
+                    <delay>1d</delay>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <description>An 8 byte ID string identifying the UPS.
+This object can be set by the administrator.</description>
+                    <inventory_link>LOCATION</inventory_link>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Identification</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>0c8b246061ff4ce5a5d40172611539ed</uuid>
+                    <name>Line Output Status</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.318.1.1.1.4.1.1.0</snmp_oid>
+                    <key>upsBasicOutputStatus</key>
+                    <description>The current state of the UPS.</description>
+                    <valuemap>
+                        <name>Output Status</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Operation</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>055c657952054bc7873cb773fdbc109f</uuid>
+                            <expression>last(/APC PowerChute Business/upsBasicOutputStatus)&lt;&gt;2</expression>
+                            <name>Output status is - {ITEM.LASTVALUE}</name>
+                            <opdata>{ITEM.LASTVALUE}</opdata>
+                            <priority>HIGH</priority>
+                            <description>состояние основного выхода ИБП
+1 ⇒ неизвестно (данные не поступают отключен)
+2 ⇒ на линии (нормальный рабочий режим)
+3 ⇒ на батарее
+4 ⇒ на Smart Boost (повышение напряжения)
+5 ⇒ спал по времени
+6 ⇒ обход программного обеспечения
+7 ⇒ выкл
+8 ⇒ перезагрузка
+9 ⇒ Обходной байпас
+10 ⇒ Обход аппаратного сбоя
+11 ⇒ спать до возвращения власти
+12 ⇒ on Smart Trim (понижение напряжения)
+13 ⇒ экологических Способов
+14 ⇒ горячих Резервов
+15 ⇒ на тесте батареи
+16 ⇒ чрезвычайных Статических Обходов
+17 ⇒ статических Резервов Обхода
+18 ⇒ режимов энергосбережения
+19 ⇒ Режим Режим Spot 
+20 ⇒ e Преобразование
+21 ⇒  Режим Spot зарядного устройства
+22 ⇒ Режим Spot инвертора
+
+{PowerChute Business:upsBasicOutputStatus.min(#3)}&lt;&gt;2 and {PowerChute Business:upsBasicOutputStatus.min(#3)}&lt;&gt;12
+
+Или Нет данных более 10 минут
+Нет сбора данных SNMP</description>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>7d8d11b9c2e44033bbfba6c98dce8891</uuid>
+                    <name>PowerChute Service Status SNMP</name>
+                    <type>INTERNAL</type>
+                    <key>zabbix[host,snmp,available]</key>
+                    <valuemap>
+                        <name>Service Connectivity</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Availability</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>4d7c5df2152d444d80741da6236f5773</uuid>
+                            <expression>last(/APC PowerChute Business/zabbix[host,snmp,available],#1)&lt;&gt;1 and last(/APC PowerChute Business/zabbix[host,snmp,available],#2)&lt;&gt;1</expression>
+                            <name>PowerChute service is not responding to SNMP</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <macros>
+                <macro>
+                    <macro>{$SNMPV3_AUTHPASS}</macro>
+                </macro>
+                <macro>
+                    <macro>{$SNMPV3_PORT}</macro>
+                </macro>
+                <macro>
+                    <macro>{$SNMPV3_PRIVATEPASS}</macro>
+                </macro>
+                <macro>
+                    <macro>{$SNMPV3_SECURITYNAME}</macro>
+                </macro>
+            </macros>
+            <dashboards>
+                <dashboard>
+                    <uuid>969c6c8f3b8e4637ba6bf550a225ed51</uuid>
+                    <name>UPS Performance</name>
+                    <pages>
+                        <page>
+                            <name>Real Time</name>
+                            <widgets>
+                                <widget>
+                                    <type>GRAPH_CLASSIC</type>
+                                    <y>6</y>
+                                    <width>12</width>
+                                    <height>6</height>
+                                    <fields>
+                                        <field>
+                                            <type>GRAPH</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <host>APC PowerChute Business</host>
+                                                <name>Battery</name>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
+                                    <type>GRAPH_CLASSIC</type>
+                                    <x>12</x>
+                                    <width>12</width>
+                                    <height>6</height>
+                                    <fields>
+                                        <field>
+                                            <type>GRAPH</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <host>APC PowerChute Business</host>
+                                                <name>Line Output</name>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
+                                    <type>GRAPH_CLASSIC</type>
+                                    <width>12</width>
+                                    <height>6</height>
+                                    <fields>
+                                        <field>
+                                            <type>GRAPH</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <host>APC PowerChute Business</host>
+                                                <name>Line Input</name>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
+                                    <type>ITEM</type>
+                                    <x>18</x>
+                                    <y>6</y>
+                                    <width>6</width>
+                                    <height>3</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>adv_conf</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>show</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>units_bold</name>
+                                            <value>0</value>
+                                        </field>
+                                        <field>
+                                            <type>ITEM</type>
+                                            <name>itemid</name>
+                                            <value>
+                                                <host>APC PowerChute Business</host>
+                                                <key>upsAdvBatteryRunTimeRemaining</key>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
+                                    <type>ITEM</type>
+                                    <x>18</x>
+                                    <y>9</y>
+                                    <width>6</width>
+                                    <height>3</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>show</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>ITEM</type>
+                                            <name>itemid</name>
+                                            <value>
+                                                <host>APC PowerChute Business</host>
+                                                <key>upsBasicBatteryTimeOnBattery</key>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
+                                    <type>PLAIN_TEXT</type>
+                                    <x>12</x>
+                                    <y>6</y>
+                                    <width>6</width>
+                                    <height>6</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>show_as_html</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>ITEM</type>
+                                            <name>itemids</name>
+                                            <value>
+                                                <host>APC PowerChute Business</host>
+                                                <key>upsBasicOutputStatus</key>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                            </widgets>
+                        </page>
+                        <page>
+                            <name>Maintanance</name>
+                            <widgets>
+                                <widget>
+                                    <type>GRAPH_CLASSIC</type>
+                                    <width>12</width>
+                                    <height>6</height>
+                                    <fields>
+                                        <field>
+                                            <type>GRAPH</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <host>APC PowerChute Business</host>
+                                                <name>Temperature</name>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
+                                    <type>ITEM</type>
+                                    <x>12</x>
+                                    <y>9</y>
+                                    <width>6</width>
+                                    <height>3</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>show</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>ITEM</type>
+                                            <name>itemid</name>
+                                            <value>
+                                                <host>APC PowerChute Business</host>
+                                                <key>upsAdvBatteryReplaceIndicator</key>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
+                                    <type>ITEM</type>
+                                    <y>6</y>
+                                    <width>6</width>
+                                    <height>3</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>show</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>adv_conf</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>ITEM</type>
+                                            <name>itemid</name>
+                                            <value>
+                                                <host>APC PowerChute Business</host>
+                                                <key>upsAdvTestCalibrationDate</key>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
+                                    <type>ITEM</type>
+                                    <y>9</y>
+                                    <width>6</width>
+                                    <height>3</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>show</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>ITEM</type>
+                                            <name>itemid</name>
+                                            <value>
+                                                <host>APC PowerChute Business</host>
+                                                <key>upsAdvTestCalibrationResults</key>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
+                                    <type>ITEM</type>
+                                    <x>6</x>
+                                    <y>6</y>
+                                    <width>6</width>
+                                    <height>3</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>show</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>ITEM</type>
+                                            <name>itemid</name>
+                                            <value>
+                                                <host>APC PowerChute Business</host>
+                                                <key>upsAdvTestLastDiagnosticsDate</key>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
+                                    <type>ITEM</type>
+                                    <x>6</x>
+                                    <y>9</y>
+                                    <width>6</width>
+                                    <height>3</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>show</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>ITEM</type>
+                                            <name>itemid</name>
+                                            <value>
+                                                <host>APC PowerChute Business</host>
+                                                <key>upsAdvTestDiagnosticsResults</key>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
+                                    <type>GRAPH_CLASSIC</type>
+                                    <x>12</x>
+                                    <width>12</width>
+                                    <height>6</height>
+                                    <fields>
+                                        <field>
+                                            <type>GRAPH</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <host>APC PowerChute Business</host>
+                                                <name>Line Output Load</name>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
+                                    <type>ITEM</type>
+                                    <x>12</x>
+                                    <y>6</y>
+                                    <width>6</width>
+                                    <height>3</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>show</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>ITEM</type>
+                                            <name>itemid</name>
+                                            <value>
+                                                <host>APC PowerChute Business</host>
+                                                <key>upsAdvTestDiagnosticSchedule</key>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                            </widgets>
+                        </page>
+                    </pages>
+                </dashboard>
+            </dashboards>
+            <valuemaps>
+                <valuemap>
+                    <uuid>db302c917e99484c98fed4f6832529e4</uuid>
+                    <name>Battery Calibration</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>ok</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>calibration failed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>calibration in progress</newvalue>
+                        </mapping>
+                        <mapping>
+                            <type>DEFAULT</type>
+                            <newvalue>unavailable</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>ae6f11a3732b49eeb358ab3f7d6cf8b2</uuid>
+                    <name>Battery Capacity Status</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>ok</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>low</newvalue>
+                        </mapping>
+                        <mapping>
+                            <type>DEFAULT</type>
+                            <newvalue>unavailable</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>249290a4786248cdae7b4b1e1a331416</uuid>
+                    <name>Battery Diagnostics</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>ok</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>diagnostics failed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>diagnostics invalid test</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>diagnostics in progress</newvalue>
+                        </mapping>
+                        <mapping>
+                            <type>DEFAULT</type>
+                            <newvalue>unavailable</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>37d75854642342409eb5d20abc54cb41</uuid>
+                    <name>Battery Diagnostics Schedule</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>not configured</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>bi Weekly</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>weekly</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>at turn on</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>never</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>monthly</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>7</value>
+                            <newvalue>quarterly</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>8</value>
+                            <newvalue>bi weekly since last test</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>9</value>
+                            <newvalue>weekly since last test</newvalue>
+                        </mapping>
+                        <mapping>
+                            <type>DEFAULT</type>
+                            <newvalue>unavailable</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>6752c794b04042afae653e539ed08f2b</uuid>
+                    <name>Battery Replacement</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>ok</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>need replacement</newvalue>
+                        </mapping>
+                        <mapping>
+                            <type>DEFAULT</type>
+                            <newvalue>unavailable</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>1fdbd3604aa7416f9914f34f3887a9cd</uuid>
+                    <name>Input Sensetivity</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>auto</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>low</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>medium</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>high</newvalue>
+                        </mapping>
+                        <mapping>
+                            <type>DEFAULT</type>
+                            <newvalue>unavailable</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>6562ffac0ae8426aa18049d40eea4fce</uuid>
+                    <name>Output Status</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>data cable disconnected</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>online</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>on battery</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>on smart boost</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>timed sleeping</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>software bypass</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>7</value>
+                            <newvalue>off</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>8</value>
+                            <newvalue>rebooting</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>9</value>
+                            <newvalue>switched bypass</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>10</value>
+                            <newvalue>hardware failure bypass</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>11</value>
+                            <newvalue>sleeping until power return</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>12</value>
+                            <newvalue>on smart trim</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>13</value>
+                            <newvalue>eco mode</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>14</value>
+                            <newvalue>hot standby</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>15</value>
+                            <newvalue>on battery test</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>16</value>
+                            <newvalue>emergency static bypass</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>17</value>
+                            <newvalue>static bypass standby</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>18</value>
+                            <newvalue>power saving mode</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>19</value>
+                            <newvalue>spot mode</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>20</value>
+                            <newvalue>e conversion</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>21</value>
+                            <newvalue>charger spot mode</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>22</value>
+                            <newvalue>inverter spot mode</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>23</value>
+                            <newvalue>active load</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>24</value>
+                            <newvalue>battery discharge spot mode</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>25</value>
+                            <newvalue>inverter standby</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>26</value>
+                            <newvalue>charger only</newvalue>
+                        </mapping>
+                        <mapping>
+                            <type>DEFAULT</type>
+                            <newvalue>unavailable</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>3ac2d352f15b44b4ac3cf42e3aa6873b</uuid>
+                    <name>Service Availability</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>ok</newvalue>
+                        </mapping>
+                        <mapping>
+                            <type>DEFAULT</type>
+                            <newvalue>not running</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>e7d968cc06104cb5b24fae2906f95063</uuid>
+                    <name>Service Connectivity</name>
+                    <mappings>
+                        <mapping>
+                            <value>0</value>
+                            <newvalue>unavailable</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>ok</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <type>DEFAULT</type>
+                            <newvalue>unavailable</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+            </valuemaps>
+        </template>
+    </templates>
+    <triggers>
+        <trigger>
+            <uuid>b590063ae49d427481f36cbd7d354ff1</uuid>
+            <expression>nodata(/APC PowerChute Business/upsBasicOutputStatus,5m)=1 or
+max(/APC PowerChute Business/zabbix[host,snmp,available],5m)=0</expression>
+            <name>Output status is unavailable</name>
+            <priority>HIGH</priority>
+            <description>состояние основного выхода ИБП
+1 ⇒ неизвестно (данные не поступают отключен)
+2 ⇒ на линии (нормальный рабочий режим)
+3 ⇒ на батарее
+4 ⇒ на Smart Boost (повышение напряжения)
+5 ⇒ спал по времени
+6 ⇒ обход программного обеспечения
+7 ⇒ выкл
+8 ⇒ перезагрузка
+9 ⇒ Обходной байпас
+10 ⇒ Обход аппаратного сбоя
+11 ⇒ спать до возвращения власти
+12 ⇒ on Smart Trim (понижение напряжения)
+13 ⇒ экологических Способов
+14 ⇒ горячих Резервов
+15 ⇒ на тесте батареи
+16 ⇒ чрезвычайных Статических Обходов
+17 ⇒ статических Резервов Обхода
+18 ⇒ режимов энергосбережения
+19 ⇒ Режим Режим Spot 
+20 ⇒ e Преобразование
+21 ⇒  Режим Spot зарядного устройства
+22 ⇒ Режим Spot инвертора
+
+{PowerChute Business:upsBasicOutputStatus.min(#3)}&lt;&gt;2 and {PowerChute Business:upsBasicOutputStatus.min(#3)}&lt;&gt;12
+
+Или Нет данных более 10 минут
+Нет сбора данных SNMP</description>
+            <manual_close>YES</manual_close>
+        </trigger>
+    </triggers>
+    <graphs>
+        <graph>
+            <uuid>8fa7ac286a30491ab6172045449f88b5</uuid>
+            <name>Battery</name>
+            <yaxismax>110</yaxismax>
+            <ymax_type_1>FIXED</ymax_type_1>
+            <graph_items>
+                <graph_item>
+                    <drawtype>GRADIENT_LINE</drawtype>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>APC PowerChute Business</host>
+                        <key>upsAdvBatteryCapacity</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <drawtype>BOLD_LINE</drawtype>
+                    <color>274482</color>
+                    <yaxisside>RIGHT</yaxisside>
+                    <calc_fnc>ALL</calc_fnc>
+                    <item>
+                        <host>APC PowerChute Business</host>
+                        <key>upsAdvBatteryActualVoltage</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <uuid>baaefbed04534a13aa4928c7df5785d1</uuid>
+            <name>Line Input</name>
+            <show_triggers>NO</show_triggers>
+            <graph_items>
+                <graph_item>
+                    <drawtype>GRADIENT_LINE</drawtype>
+                    <color>29B6F6</color>
+                    <calc_fnc>ALL</calc_fnc>
+                    <item>
+                        <host>APC PowerChute Business</host>
+                        <key>upsAdvInputLineVoltage</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <drawtype>BOLD_LINE</drawtype>
+                    <color>1A7C11</color>
+                    <calc_fnc>ALL</calc_fnc>
+                    <item>
+                        <host>APC PowerChute Business</host>
+                        <key>upsAdvConfigHighTransferVolt</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>2</sortorder>
+                    <drawtype>BOLD_LINE</drawtype>
+                    <color>F63100</color>
+                    <calc_fnc>ALL</calc_fnc>
+                    <item>
+                        <host>APC PowerChute Business</host>
+                        <key>upsAdvConfigLowTransferVolt</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>3</sortorder>
+                    <drawtype>DASHED_LINE</drawtype>
+                    <color>274482</color>
+                    <yaxisside>RIGHT</yaxisside>
+                    <calc_fnc>ALL</calc_fnc>
+                    <item>
+                        <host>APC PowerChute Business</host>
+                        <key>upsAdvInputFrequency</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <uuid>76a76086135c44d1b7b445d5aef0d95a</uuid>
+            <name>Line Output</name>
+            <show_triggers>NO</show_triggers>
+            <graph_items>
+                <graph_item>
+                    <drawtype>GRADIENT_LINE</drawtype>
+                    <color>29B6F6</color>
+                    <calc_fnc>ALL</calc_fnc>
+                    <item>
+                        <host>APC PowerChute Business</host>
+                        <key>upsAdvOutputVoltage</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <drawtype>BOLD_LINE</drawtype>
+                    <color>1A7C11</color>
+                    <calc_fnc>ALL</calc_fnc>
+                    <item>
+                        <host>APC PowerChute Business</host>
+                        <key>upsAdvConfigRatedOutputVoltage</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>2</sortorder>
+                    <drawtype>DASHED_LINE</drawtype>
+                    <color>274482</color>
+                    <yaxisside>RIGHT</yaxisside>
+                    <calc_fnc>ALL</calc_fnc>
+                    <item>
+                        <host>APC PowerChute Business</host>
+                        <key>upsAdvOutputFrequency</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <uuid>176a02e690c14030941dc908abd25391</uuid>
+            <name>Line Output Load</name>
+            <graph_items>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <drawtype>BOLD_LINE</drawtype>
+                    <color>0000CC</color>
+                    <item>
+                        <host>APC PowerChute Business</host>
+                        <key>upsAdvOutputLoad</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <uuid>f550673d834d4a4db6cee66b5f5d9ccc</uuid>
+            <name>Temperature</name>
+            <ymin_type_1>FIXED</ymin_type_1>
+            <graph_items>
+                <graph_item>
+                    <drawtype>GRADIENT_LINE</drawtype>
+                    <color>660000</color>
+                    <item>
+                        <host>APC PowerChute Business</host>
+                        <key>upsAdvBatteryTemperature</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+    </graphs>
+</zabbix_export>
